@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ReduxProvider } from "@/store/store";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
           <Header />
           <main className="flex-grow container mx-auto p-4">{children}</main>
           <Footer />
+          <Toaster position="top-right" />
         </ReduxProvider>
       </body>
     </html>

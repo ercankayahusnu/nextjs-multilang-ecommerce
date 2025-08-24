@@ -21,7 +21,7 @@ export default async function HomePage() {
     <main className="container mx-auto px-4 py-10">
       {/* Başlık */}
       <h1 className="text-4xl font-bold text-center text-blue-600 mb-6">
-        Öne Çıkan Ürünler
+        Featured Products
       </h1>
       {/* Öne çıkan ürünler */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">

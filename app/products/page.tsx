@@ -1,47 +1,106 @@
-import Image from "next/image";
-import Link from "next/link";
-import AddToCartButton from "@/components/AddToCartButton";
+"use client";
 
-async function getProducts() {
-  const res = await fetch("https://fakestoreapi.com/products", {
-    next: { revalidate: 60 },
-  });
+import { useState, useEffect } from "react";
+import ProductCard from "@/components/ProductCard";
 
+// API'den ürünleri çek
+async function fetchProducts() {
+  const res = await fetch("https://fakestoreapi.com/products");
   if (!res.ok) throw new Error("Ürünler getirilemedi");
-
   return res.json();
 }
 
-export default async function ProductsPage() {
-  const products = await getProducts();
+export default function ProductsPage() {
+  const [products, setProducts] = useState<any[]>([]);
+  const [filtered, setFiltered] = useState<any[]>([]);
+  const [category, setCategory] = useState<string>("all");
+  const [sort, setSort] = useState<string>("none");
+  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>(1000);
+
+  useEffect(() => {
+    fetchProducts().then((data) => {
+      setProducts(data);
+      setFiltered(data);
+    });
+  }, []);
+
+  // Filtreleme & sıralama
+  useEffect(() => {
+    let temp = [...products];
+
+    // Kategori
+    if (category !== "all") {
+      temp = temp.filter((p) => p.category === category);
+    }
+
+    // Fiyat aralığı
+    temp = temp.filter((p) => p.price >= minPrice && p.price <= maxPrice);
+
+    // Sıralama
+    if (sort === "asc") {
+      temp.sort((a, b) => a.price - b.price);
+    } else if (sort === "desc") {
+      temp.sort((a, b) => b.price - a.price);
+    }
+
+    setFiltered(temp);
+  }, [category, sort, minPrice, maxPrice, products]);
 
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">Products</h1>
+
+      {/* Filtre ve sıralama paneli */}
+      <div className="flex flex-wrap gap-4 mb-6 items-center">
+        {/* Kategori */}
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="border rounded px-3 py-2"
+        >
+          <option value="all">All Categories</option>
+          <option value="men's clothing">Men's Clothing</option>
+          <option value="women's clothing">Women's Clothing</option>
+          <option value="jewelery">Jewelery</option>
+          <option value="electronics">Electronics</option>
+        </select>
+
+        {/* Fiyat aralığı */}
+        <div className="flex items-center gap-2">
+          <input
+            type="number"
+            value={minPrice}
+            onChange={(e) => setMinPrice(Number(e.target.value))}
+            className="border rounded px-2 py-1 w-24"
+            placeholder="Min"
+          />
+          <span>-</span>
+          <input
+            type="number"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(Number(e.target.value))}
+            className="border rounded px-2 py-1 w-24"
+            placeholder="Max"
+          />
+        </div>
+
+        {/* Sıralama */}
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+          className="border rounded px-3 py-2"
+        >
+          <option value="none">Sort By</option>
+          <option value="asc">Price: Low → High</option>
+          <option value="desc">Price: High → Low</option>
+        </select>
+      </div>
+
+      {/* Grid ürün listesi */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((product: any) => (
-          <div
-            key={product.id}
-            className="border rounded-lg shadow-sm p-4 flex flex-col hover:shadow-md transition"
-          >
-            <Link href={`/products/${product.id}`} className="flex-1">
-              <Image
-                src={product.image}
-                alt={product.title}
-                width={200}
-                height={200}
-                className="object-contain h-48 w-full mb-4"
-              />
-              <h2 className="font-semibold text-lg line-clamp-2">
-                {product.title}
-              </h2>
-              <p className="text-gray-500 text-sm mb-2 capitalize">
-                {product.category}
-              </p>
-              <p className="text-blue-600 font-bold mb-4">${product.price}</p>
-            </Link>
-            <AddToCartButton product={product} />
-          </div>
+        {filtered.map((product) => (
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </div>
