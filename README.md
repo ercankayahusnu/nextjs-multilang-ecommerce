@@ -30,7 +30,7 @@
   <tr><th>Klasör</th><th>Açıklama</th></tr>
   <tr><td><b>app/</b></td><td>Ana sayfa, ürün listesi, ürün detay, sepet</td></tr>
   <tr><td><b>components/</b></td><td>Reusable UI bileşenleri (Card, Button, Layout)</td></tr>
-  <tr><td><b>Store/</b></td><td>Redux slice’ları (cart vs.)</td></tr>
+  <tr><td><b>store/</b></td><td>Redux slice’ları (cart vs.)</td></tr>
 </table>
 
 <h2>⚙️ Kurulum ve Çalıştırma</h2>
@@ -73,3 +73,11 @@
     </td>
   </tr>
 </table>
+
+<h2>🌍 Canlı Demo</h2>
+<p>
+  Projenin canlı demosuna buradan ulaşabilirsiniz:  
+  <a href="https://nextjs-multilang-ecommerce-3kvl.vercel.app/" target="_blank">
+    🔗 https://nextjs-multilang-ecommerce-3kvl.vercel.app/
+  </a>
+</p>
